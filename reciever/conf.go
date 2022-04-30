@@ -10,6 +10,7 @@ type conf struct {
 	PackageConfigFile    string
 	ApiKeyFile           string
 	MiddlemanDownloadURL string
+	StatsFile            string
 }
 
 func newConf(p string) (conf, error) {

@@ -25,6 +25,7 @@ type Reciever struct {
 	packageConfigFilePath string
 	apiKey                string
 	destinationRootPath   string
+	statsFile             string
 
 	middlemanURL string
 	log          *log.Logger
@@ -58,6 +59,7 @@ func NewRecieverFromConfig(confFilePath, destinationRootPath string) (Reciever, 
 		packageConfigFilePath: conf.PackageConfigFile,
 		destinationRootPath:   destinationRootPath,
 		middlemanURL:          conf.MiddlemanDownloadURL,
+		statsFile:             conf.StatsFile,
 		log:                   l,
 	}, nil
 }
@@ -126,6 +128,22 @@ func (r Reciever) AskForPackage() (bool, error) {
 		return false, err
 	}
 
+	sf, err := os.OpenFile(r.statsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer sf.Close()
+	if err != nil {
+		return true, err
+	}
+	_, err = sf.WriteString(
+		stats{
+			size: len(body),
+			dur:  time.Since(t),
+			time: time.Now(),
+		}.toCSV(),
+	)
+	if err != nil {
+		return true, err
+	}
+
 	sub := shared.Submission{}
 	err = json.Unmarshal(body, &sub)
 	logError(r.log, err)
@@ -181,6 +199,7 @@ func (r Reciever) AskForPackage() (bool, error) {
 			}
 		}
 	}()
+	t = time.Now()
 	_, err = io.Copy(f, bytes.NewReader(pack.Payload))
 	logError(r.log, err)
 	finish <- true
