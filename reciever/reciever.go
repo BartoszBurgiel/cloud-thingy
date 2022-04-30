@@ -112,6 +112,17 @@ func (r Reciever) AskForPackage() (bool, error) {
 
 	c := &http.Client{}
 	t := time.Now()
+	res, err := c.Do(req)
+	logError(r.log, err)
+	if err != nil {
+		return false, err
+	}
+
+	logMiddlemanResponse(r.log, res.Status, time.Since(t))
+	if res.StatusCode != 200 {
+		return false, fmt.Errorf("Invalid response from the middleman to the reciever when asking for package. \nStatusCode: %d\n", res.StatusCode)
+	}
+
 	finish := make(chan bool)
 	go func() {
 		fmt.Print("Downloading...")
@@ -128,19 +139,9 @@ func (r Reciever) AskForPackage() (bool, error) {
 			}
 		}
 	}()
-	res, err := c.Do(req)
-	logError(r.log, err)
-	if err != nil {
-		return false, err
-	}
-	finish <- true
-
-	logMiddlemanResponse(r.log, res.Status, time.Since(t))
-	if res.StatusCode != 200 {
-		return false, fmt.Errorf("Invalid response from the middleman to the reciever when asking for package. \nStatusCode: %d\n", res.StatusCode)
-	}
-
+	t = time.Now()
 	body, err := ioutil.ReadAll(res.Body)
+	finish <- true
 	if err != nil {
 		return false, err
 	}
