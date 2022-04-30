@@ -157,7 +157,7 @@ func (r Reciever) AskForPackage() (bool, error) {
 		return false, err
 	}
 
-	pathToZip := r.destinationRootPath + time.Now().Format("2006-01-02-15-04-05") + ".zip"
+	pathToZip := r.destinationRootPath + string(os.PathSeparator) + time.Now().Format("2006-01-02-15-04-05") + ".zip"
 	f, err := os.Create(pathToZip)
 	defer f.Close()
 	logError(r.log, err)
