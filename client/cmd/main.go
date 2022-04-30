@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	fmt.Println("hello")
+	if len(os.Args) != 3 {
+		fmt.Println("Not enough arguments provided.")
+		return
+	}
 	c, err := client.NewClientFromConfigFile(
 		os.Args[1],
 		os.Args[2],
