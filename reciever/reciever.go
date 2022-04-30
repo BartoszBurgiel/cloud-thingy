@@ -112,11 +112,28 @@ func (r Reciever) AskForPackage() (bool, error) {
 
 	c := &http.Client{}
 	t := time.Now()
+	finish := make(chan bool)
+	go func() {
+		fmt.Print("Downloading...")
+		for {
+			select {
+			case _, ok := <-finish:
+				if ok {
+					fmt.Println("\nFinished!")
+					return
+				}
+			default:
+				fmt.Print(".")
+				time.Sleep(time.Second)
+			}
+		}
+	}()
 	res, err := c.Do(req)
 	logError(r.log, err)
 	if err != nil {
 		return false, err
 	}
+	finish <- true
 
 	logMiddlemanResponse(r.log, res.Status, time.Since(t))
 	if res.StatusCode != 200 {
@@ -183,26 +200,9 @@ func (r Reciever) AskForPackage() (bool, error) {
 		return false, err
 	}
 
-	finish := make(chan bool)
-	go func() {
-		fmt.Print("Downloading...")
-		for {
-			select {
-			case _, ok := <-finish:
-				if ok {
-					fmt.Println("\nFinished!")
-					return
-				}
-			default:
-				fmt.Print(".")
-				time.Sleep(time.Second)
-			}
-		}
-	}()
 	t = time.Now()
 	_, err = io.Copy(f, bytes.NewReader(pack.Payload))
 	logError(r.log, err)
-	finish <- true
 	if err != nil {
 		return false, err
 	}
