@@ -146,7 +146,24 @@ func (c Client) Sumbit() error {
 
 	httpC := &http.Client{}
 	t = time.Now()
+	finish := make(chan bool)
+	go func() {
+		fmt.Print("Uploading...")
+		for {
+			select {
+			case _, ok := <-finish:
+				if ok {
+					fmt.Println("\nFinished!")
+					return
+				}
+			default:
+				fmt.Print(".")
+				time.Sleep(time.Second)
+			}
+		}
+	}()
 	res, err := httpC.Do(req)
+	finish <- true
 	logError(c.log, err)
 	if err != nil {
 		return err

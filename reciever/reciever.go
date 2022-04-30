@@ -165,8 +165,25 @@ func (r Reciever) AskForPackage() (bool, error) {
 		return false, err
 	}
 
+	finish := make(chan bool)
+	go func() {
+		fmt.Print("Downloading...")
+		for {
+			select {
+			case _, ok := <-finish:
+				if ok {
+					fmt.Println("\nFinished!")
+					return
+				}
+			default:
+				fmt.Print(".")
+				time.Sleep(time.Second)
+			}
+		}
+	}()
 	_, err = io.Copy(f, bytes.NewReader(pack.Payload))
 	logError(r.log, err)
+	finish <- true
 	if err != nil {
 		return false, err
 	}
