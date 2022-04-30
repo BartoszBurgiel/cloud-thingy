@@ -11,6 +11,7 @@ type conf struct {
 	MACSecretFilePath     string
 	PackageConfigFilePath string
 	MiddlemanUploadURL    string
+	StatsFile             string
 }
 
 // newConf reads and unmarshals the conf.json file

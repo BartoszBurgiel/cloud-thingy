@@ -29,6 +29,8 @@ type Client struct {
 
 	uploadURL string
 
+	statsFile string
+
 	log *log.Logger
 }
 
@@ -44,6 +46,7 @@ func NewClientFromConfigFile(configFilePath, payloadRootPath string) (Client, er
 		log:                   l,
 		packageConfigFilePath: conf.PackageConfigFilePath,
 		uploadURL:             conf.MiddlemanUploadURL,
+		statsFile:             conf.StatsFile,
 	}
 
 	macSecret, err := os.ReadFile(conf.MACSecretFilePath)
@@ -176,6 +179,20 @@ func (c Client) Sumbit() error {
 		return err
 	}
 	logRequestToTheMiddleman(c.log, string(c.apiKey), dur, string(msg))
-
+	f, err := os.OpenFile(c.statsFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	defer f.Close()
+	if err != nil {
+		return err
+	}
+	_, err = f.WriteString(
+		stats{
+			size: len(requestData),
+			dur:  dur,
+			time: time.Now(),
+		}.toCSV(),
+	)
+	if err != nil {
+		return err
+	}
 	return nil
 }

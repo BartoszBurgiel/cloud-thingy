@@ -1,1 +1,1 @@
-{"ApiKeyFilePath":"<path-to-file-containing-the-api-key>","MACSecretFilePath":"<path-to-file-containing-the-hmac-secret>","PackageConfigFilePath":"<path-to-file-containing-the-package-config>","MiddlemanUploadURL":"<url-to-the-middleman-server>"}
+{"ApiKeyFilePath":"<path-to-file-containing-the-api-key>","MACSecretFilePath":"<path-to-file-containing-the-hmac-secret>","PackageConfigFilePath":"<path-to-file-containing-the-package-config>","MiddlemanUploadURL":"<url-to-the-middleman-server>","StatsFile":"<path-to-the-stats-file>"}
