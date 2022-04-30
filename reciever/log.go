@@ -11,6 +11,10 @@ func logError(l *log.Logger, err error) {
 	}
 }
 
+func logInit(l *log.Logger, dest string) {
+	l.Printf("Starting a new reciever instance. Destination path: %s\n.", dest)
+}
+
 func logAuthentication(l *log.Logger, success bool, id string) {
 
 	if success {

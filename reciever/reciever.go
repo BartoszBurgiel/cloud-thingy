@@ -36,6 +36,7 @@ func NewRecieverFromConfig(confFilePath, destinationRootPath string) (Reciever, 
 		return Reciever{}, err
 	}
 	l := log.New(os.Stdout, fmt.Sprintf("RECIEVER(id: %s)> ", uuid.New().String()), log.Ldate|log.Ltime)
+	logInit(l, destinationRootPath)
 	macSecret, err := os.ReadFile(conf.MacSecretFile)
 	logError(l, err)
 	if err != nil {
@@ -151,7 +152,7 @@ func (r Reciever) AskForPackage() (bool, error) {
 
 	err = pack.Decrypt(conf)
 	logError(r.log, err)
-	logDecryption(r.log, err == shared.FailedDecryptionOfThePackage, sub.ID)
+	logDecryption(r.log, err != shared.FailedDecryptionOfThePackage, sub.ID)
 	if err != nil {
 		return false, err
 	}

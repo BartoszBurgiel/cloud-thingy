@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) != 3 {
+		fmt.Println("Not enough arguments provided.")
+		return
+	}
 
 	rec, err := reciever.NewRecieverFromConfig(
 		os.Args[1],
