@@ -1,0 +1,1 @@
+{"MacSecretFile":"<path-to-file-containing-the-hmac-secret>","PackageConfigFile":"<path-to-file-containing-the-package-config>","ApiKeyFile":"<path-to-file-containing-the-api-key>","MiddlemanDownloadURL":"<url-of-the-middleman-server>"}
