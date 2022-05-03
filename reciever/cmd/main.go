@@ -21,5 +21,8 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	rec.AskForPackage()
+	if _, err = rec.AskForPackage(); err != nil {
+		fmt.Println(err)
+		return
+	}
 }
