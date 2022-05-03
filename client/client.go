@@ -35,7 +35,7 @@ type Client struct {
 }
 
 func NewClientFromConfigFile(configFilePath, payloadRootPath string) (Client, error) {
-	l := log.New(os.Stdout, fmt.Sprintf("CLIENT(id: %s)> ", uuid.New().String()), log.Ldate|log.Ltime)
+	l := log.New(os.Stdout, "CLIENT>", log.Ldate|log.Ltime)
 	logInitClient(l, payloadRootPath)
 	conf, err := newConf(configFilePath)
 	if err != nil {

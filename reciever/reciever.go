@@ -36,7 +36,7 @@ func NewRecieverFromConfig(confFilePath, destinationRootPath string) (Reciever, 
 	if err != nil {
 		return Reciever{}, err
 	}
-	l := log.New(os.Stdout, fmt.Sprintf("RECIEVER(id: %s)> ", uuid.New().String()), log.Ldate|log.Ltime)
+	l := log.New(os.Stdout, "RECIEVER>", log.Ldate|log.Ltime)
 	logInit(l, destinationRootPath)
 	macSecret, err := os.ReadFile(conf.MacSecretFile)
 	logError(l, err)
