@@ -14,7 +14,7 @@ func logError(l *log.Logger, err error) {
 }
 
 func logInitClient(l *log.Logger, path string) {
-	l.Printf("Starting a new client instance at %s for the root folder: %s\n.", time.Now(), path)
+	l.Printf("Starting a new client instance at %s for: %s\n.", time.Now(), path)
 }
 
 func logAddingFileToArchive(l *log.Logger, name string) {

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/BartoszBurgiel/cloud/shared"
@@ -34,9 +35,9 @@ type Client struct {
 	log *log.Logger
 }
 
-func NewClientFromConfigFile(configFilePath, payloadRootPath string) (Client, error) {
+func NewClientFromConfigFile(configFilePath string, payloadFiles []string) (Client, error) {
 	l := log.New(os.Stdout, "CLIENT>", log.Ltime)
-	logInitClient(l, payloadRootPath)
+	logInitClient(l, strings.Join(payloadFiles, ","))
 	conf, err := newConf(configFilePath)
 	if err != nil {
 		logError(l, err)
@@ -62,13 +63,22 @@ func NewClientFromConfigFile(configFilePath, payloadRootPath string) (Client, er
 		return Client{}, err
 	}
 	cl.apiKey = apiKey[:len(apiKey)-1]
-	filepath.Walk(payloadRootPath, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
-			logAddingFileToArchive(cl.log, path)
-			cl.files = append(cl.files, path)
+
+	for _, file := range payloadFiles {
+		f, err := os.Open(file)
+		defer f.Close()
+		if os.IsNotExist(err) {
+			return Client{}, err
 		}
-		return nil
-	})
+
+		filepath.Walk(file, func(path string, info os.FileInfo, err error) error {
+			if !info.IsDir() {
+				logAddingFileToArchive(cl.log, path)
+				cl.files = append(cl.files, path)
+			}
+			return nil
+		})
+	}
 	return cl, nil
 }
 

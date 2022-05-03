@@ -8,13 +8,13 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 3 {
+	if len(os.Args) < 2 {
 		fmt.Println("Not enough arguments provided.")
 		return
 	}
 	c, err := client.NewClientFromConfigFile(
 		os.Args[1],
-		os.Args[2],
+		os.Args[2:],
 	)
 	if err != nil {
 		fmt.Println(err)
