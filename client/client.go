@@ -35,7 +35,7 @@ type Client struct {
 }
 
 func NewClientFromConfigFile(configFilePath, payloadRootPath string) (Client, error) {
-	l := log.New(os.Stdout, "CLIENT>", log.Ldate|log.Ltime)
+	l := log.New(os.Stdout, "CLIENT>", log.Ltime)
 	logInitClient(l, payloadRootPath)
 	conf, err := newConf(configFilePath)
 	if err != nil {
@@ -150,21 +150,7 @@ func (c Client) Sumbit() error {
 	httpC := &http.Client{}
 	t = time.Now()
 	finish := make(chan bool)
-	go func() {
-		fmt.Print("Uploading...")
-		for {
-			select {
-			case _, ok := <-finish:
-				if ok {
-					fmt.Println("\nFinished!")
-					return
-				}
-			default:
-				fmt.Print(".")
-				time.Sleep(time.Second)
-			}
-		}
-	}()
+	go shared.DisplayProgressBar("Uploading...", finish)
 	res, err := httpC.Do(req)
 	finish <- true
 	logError(c.log, err)

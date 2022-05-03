@@ -13,8 +13,6 @@ import (
 	"log"
 	"os"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 // Package represents the actual payload which will be sent to the middleman
@@ -32,7 +30,7 @@ type Package struct {
 
 // NewPackage creates a new package of the compressed and encrypted payload with its checksum
 func NewPackage(config PackageConfig, files []string) (Package, error) {
-	l := log.New(os.Stdout, fmt.Sprintf("PACKAGE(id: %s)>", uuid.New().String()), log.Ldate|log.Ltime)
+	l := log.New(os.Stdout, "PACKAGE>", log.Ltime)
 
 	// id for logging purposes
 	start := time.Now()

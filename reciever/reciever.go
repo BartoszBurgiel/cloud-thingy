@@ -36,7 +36,7 @@ func NewRecieverFromConfig(confFilePath, destinationRootPath string) (Reciever, 
 	if err != nil {
 		return Reciever{}, err
 	}
-	l := log.New(os.Stdout, "RECIEVER>", log.Ldate|log.Ltime)
+	l := log.New(os.Stdout, "RECIEVER>", log.Ltime)
 	logInit(l, destinationRootPath)
 	macSecret, err := os.ReadFile(conf.MacSecretFile)
 	logError(l, err)
@@ -124,21 +124,7 @@ func (r Reciever) AskForPackage() (bool, error) {
 	}
 
 	finish := make(chan bool)
-	go func() {
-		fmt.Print("Downloading...")
-		for {
-			select {
-			case _, ok := <-finish:
-				if ok {
-					fmt.Println("\nFinished!")
-					return
-				}
-			default:
-				fmt.Print(".")
-				time.Sleep(time.Second)
-			}
-		}
-	}()
+	go shared.DisplayProgressBar("Download", finish)
 	t = time.Now()
 	body, err := ioutil.ReadAll(res.Body)
 	finish <- true

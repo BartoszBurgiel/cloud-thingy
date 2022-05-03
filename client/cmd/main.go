@@ -20,5 +20,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(c.Sumbit())
+	if err = c.Sumbit(); err != nil {
+		fmt.Println(err)
+	}
 }
